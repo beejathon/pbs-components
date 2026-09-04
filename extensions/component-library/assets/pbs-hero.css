@@ -165,12 +165,19 @@
 }
 
 .shopify-section:has(.pbs-hero--full-bleed),
-.shopify-section:has(.pbs-hero--full-bleed) :is(.section, .section--page-width, .padding-style, .shopify-block, .shopify-app-block) {
+.shopify-section:has(.pbs-hero--full-bleed) :is(.section, .section--page-width, .spacing-style, .padding-style, .shopify-block, .shopify-app-block) {
   width: 100%;
   max-width: none;
   padding-inline: 0;
   margin-inline: 0;
   overflow: visible;
+}
+
+:is(main, #MainContent) > .shopify-section:first-child:has(.pbs-hero--full-bleed) :is(.section, .spacing-style, .padding-style),
+.shopify-section:has(.pbs-hero--full-bleed) :is(.spacing-style, .padding-style) {
+  --transparent-header-offset-boolean: 0;
+  --section-top-offset: 0px;
+  padding-block-start: 0;
 }
 
 .pbs-hero--full-bleed {
@@ -205,6 +212,7 @@
   max-width: 80rem;
   min-height: inherit;
   padding: 2.5rem 1.25rem 3rem;
+  padding-block-start: calc(var(--header-group-height, var(--header-height, 0px)) + 2.5rem);
 }
 
 .pbs-hero--full-bleed .pbs-hero__content {
@@ -262,29 +270,6 @@
   justify-items: end;
 }
 
-body:has(:is(main, #MainContent) > .shopify-section:first-child .pbs-hero--full-bleed) :is(#header-component, .header-wrapper):not([data-sticky-state='active']) {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  z-index: 10;
-  background: transparent;
-  --header-bg-color: transparent;
-}
-
-body:has(:is(main, #MainContent) > .shopify-section:first-child .pbs-hero--full-bleed) #header-component:not([data-sticky-state='active']) .header__row {
-  background: transparent;
-  --header-bg-color: transparent;
-}
-
-:is(main, #MainContent) > .shopify-section:first-child:has(.pbs-hero--full-bleed) {
-  margin-block-start: calc(-1 * var(--header-height, 0px));
-  background: transparent;
-}
-
-:is(main, #MainContent) > .shopify-section:first-child .pbs-hero--full-bleed .pbs-hero__container {
-  padding-block-start: calc(var(--header-height, 0px) + 2.5rem);
-}
-
 @media (min-width: 769px) {
   .pbs-hero {
     padding: 3.75rem 2.5rem;
@@ -336,6 +321,7 @@ body:has(:is(main, #MainContent) > .shopify-section:first-child .pbs-hero--full-
 
   .pbs-hero--full-bleed .pbs-hero__container {
     padding: 4rem 3rem 3.5rem;
+    padding-block-start: calc(var(--header-group-height, var(--header-height, 0px)) + 4rem);
   }
 
   .pbs-hero--full-bleed .pbs-hero__pillars {
@@ -361,9 +347,6 @@ body:has(:is(main, #MainContent) > .shopify-section:first-child .pbs-hero--full-
     justify-content: flex-end;
   }
 
-  :is(main, #MainContent) > .shopify-section:first-child .pbs-hero--full-bleed .pbs-hero__container {
-    padding-block-start: calc(var(--header-height, 0px) + 4rem);
-  }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
