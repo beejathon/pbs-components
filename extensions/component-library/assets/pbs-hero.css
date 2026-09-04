@@ -1,0 +1,307 @@
+.pbs-hero {
+  --pbs-hero-bg: #fcf9f6;
+  --pbs-hero-heading: #1a1a1a;
+  --pbs-hero-text: #555555;
+  --pbs-hero-muted: #999999;
+  --pbs-hero-cta-bg: #1a1a1a;
+  --pbs-hero-cta-text: #ffffff;
+  --pbs-hero-cta-hover: #444444;
+  --pbs-hero-border: #e8e0d8;
+  --pbs-hero-accent: #b8a89a;
+  --pbs-hero-overlay: rgb(0 0 0 / 10%);
+  --pbs-hero-radius: 12px;
+  --pbs-hero-content-max: 580px;
+  --pbs-hero-media-ratio: 3 / 4;
+
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 2rem 1.25rem;
+  background-color: var(--pbs-hero-bg);
+}
+
+.pbs-hero__container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+.pbs-hero__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  order: 2;
+  max-width: 100%;
+}
+
+.pbs-hero__brand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
+
+.pbs-hero__brand-name,
+.pbs-hero__brand-subname {
+  margin: 0;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.pbs-hero__brand-name {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--pbs-hero-muted);
+}
+
+.pbs-hero__brand-subname {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--pbs-hero-heading);
+}
+
+.pbs-hero__heading {
+  margin: 0 0 1rem;
+  font-size: 2.2rem;
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--pbs-hero-heading);
+}
+
+.pbs-hero__tagline {
+  max-width: 26rem;
+  margin: 0 0 2rem;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--pbs-hero-text);
+}
+
+.pbs-hero__cta {
+  display: inline-block;
+  width: 100%;
+  padding: 0.875rem 2.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--pbs-hero-cta-text);
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  background-color: var(--pbs-hero-cta-bg);
+  border-radius: 999px;
+  transition: background-color 0.25s ease;
+}
+
+.pbs-hero__cta:hover {
+  background-color: var(--pbs-hero-cta-hover);
+}
+
+.pbs-hero__cta:focus-visible {
+  outline: 2px solid var(--pbs-hero-heading);
+  outline-offset: 3px;
+}
+
+.pbs-hero__pillars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--pbs-hero-border);
+}
+
+.pbs-hero__pillar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.pbs-hero__pillar-icon {
+  font-size: 0.6rem;
+  color: var(--pbs-hero-accent);
+}
+
+.pbs-hero__pillar-text {
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: var(--pbs-hero-text);
+  text-transform: uppercase;
+}
+
+.pbs-hero__media {
+  order: 1;
+  width: 100%;
+  max-width: 100%;
+}
+
+.pbs-hero__image,
+.pbs-hero__placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--pbs-hero-media-ratio);
+  border-radius: var(--pbs-hero-radius);
+}
+
+.pbs-hero__image {
+  height: auto;
+  object-fit: cover;
+}
+
+.pbs-hero__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--pbs-hero-muted);
+  background-color: var(--pbs-hero-border);
+}
+
+.pbs-hero--full-bleed {
+  display: grid;
+  min-height: min(80vh, 46rem);
+  padding: 0;
+}
+
+.pbs-hero--full-bleed::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  content: "";
+  background: var(--pbs-hero-overlay);
+}
+
+.pbs-hero--full-bleed .pbs-hero__container {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, var(--pbs-hero-content-max));
+  align-items: end;
+  justify-content: start;
+  width: 100%;
+  min-height: inherit;
+  padding: 2.5rem 1.25rem;
+}
+
+.pbs-hero--full-bleed .pbs-hero__content,
+.pbs-hero--full-bleed .pbs-hero__media {
+  order: 0;
+}
+
+.pbs-hero--full-bleed .pbs-hero__content {
+  max-width: var(--pbs-hero-content-max);
+}
+
+.pbs-hero--full-bleed .pbs-hero__media {
+  position: absolute;
+  inset: 0;
+  max-width: none;
+}
+
+.pbs-hero--full-bleed .pbs-hero__image,
+.pbs-hero--full-bleed .pbs-hero__placeholder {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+.pbs-hero--full-bleed .pbs-hero__image {
+  object-fit: cover;
+}
+
+.pbs-hero--full-bleed.pbs-hero--align-center .pbs-hero__container {
+  justify-content: center;
+  text-align: center;
+}
+
+.pbs-hero--full-bleed.pbs-hero--align-center .pbs-hero__content,
+.pbs-hero--full-bleed.pbs-hero--align-center .pbs-hero__tagline,
+.pbs-hero--full-bleed.pbs-hero--align-center .pbs-hero__brand {
+  align-items: center;
+  margin-inline: auto;
+}
+
+.pbs-hero--full-bleed.pbs-hero--align-center .pbs-hero__brand {
+  justify-content: center;
+}
+
+.pbs-hero--full-bleed.pbs-hero--align-end .pbs-hero__container {
+  justify-content: end;
+}
+
+@media (min-width: 769px) {
+  .pbs-hero {
+    padding: 3.75rem 2.5rem;
+  }
+
+  .pbs-hero--split .pbs-hero__container {
+    flex-direction: row;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .pbs-hero--split .pbs-hero__content {
+    flex: 1;
+    order: 0;
+    max-width: var(--pbs-hero-content-max);
+  }
+
+  .pbs-hero--split .pbs-hero__media {
+    flex: 1;
+    order: 0;
+    max-width: 35rem;
+  }
+
+  .pbs-hero--split .pbs-hero__cta {
+    width: auto;
+  }
+
+  .pbs-hero--split .pbs-hero__pillars {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+  }
+
+  .pbs-hero--split .pbs-hero__pillar {
+    justify-content: flex-start;
+  }
+
+  .pbs-hero__heading {
+    font-size: 3rem;
+  }
+
+  .pbs-hero__tagline {
+    font-size: 1.05rem;
+  }
+
+  .pbs-hero--full-bleed .pbs-hero__container {
+    padding: 4rem 3rem;
+  }
+
+  .pbs-hero--full-bleed.pbs-hero--align-center .pbs-hero__container {
+    align-items: center;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .pbs-hero--split .pbs-hero__container {
+    gap: 2.5rem;
+  }
+
+  .pbs-hero--split .pbs-hero__pillars {
+    gap: 1.25rem;
+  }
+
+  .pbs-hero__heading {
+    font-size: 2.5rem;
+  }
+}

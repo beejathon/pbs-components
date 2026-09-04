@@ -1,0 +1,531 @@
+{%- liquid
+  assign layout = block.settings.layout | default: 'split'
+  if layout == 'full_bleed'
+    assign layout_class = 'pbs-hero--full-bleed'
+    assign image_sizes = '100vw'
+  else
+    assign layout_class = 'pbs-hero--split'
+    assign image_sizes = '(min-width: 769px) 50vw, 100vw'
+  endif
+
+  assign align = block.settings.content_position | default: 'start'
+  assign heading_text = block.settings.seo_heading | default: block.settings.heading
+  assign image_alt = block.settings.image_alt | default: heading_text
+  assign overlay_alpha = block.settings.overlay_opacity | times: 0.01
+  assign overlay_color = block.settings.color_overlay | color_modify: 'alpha', overlay_alpha
+
+  assign show_brand = false
+  if block.settings.brand_name != blank or block.settings.brand_subname != blank
+    assign show_brand = true
+  endif
+
+  assign show_cta = false
+  if block.settings.cta_link != blank and block.settings.cta_text != blank
+    assign show_cta = true
+  endif
+
+  assign show_pillars = false
+  if block.settings.pillar_1 != blank or block.settings.pillar_2 != blank or block.settings.pillar_3 != blank
+    assign show_pillars = true
+  endif
+
+  assign schema_brand = block.settings.schema_brand_name | default: shop.name
+  assign schema_description = block.settings.schema_description | default: block.settings.tagline | default: page_description
+  assign about_name = block.settings.brand_name | default: schema_brand
+
+  assign social_urls = ''
+  if block.settings.social_url_1 != blank
+    assign social_urls = block.settings.social_url_1
+  endif
+  if block.settings.social_url_2 != blank
+    if social_urls != blank
+      assign social_urls = social_urls | append: '|' | append: block.settings.social_url_2
+    else
+      assign social_urls = block.settings.social_url_2
+    endif
+  endif
+  if block.settings.social_url_3 != blank
+    if social_urls != blank
+      assign social_urls = social_urls | append: '|' | append: block.settings.social_url_3
+    else
+      assign social_urls = block.settings.social_url_3
+    endif
+  endif
+  assign social_list = social_urls | split: '|'
+
+  if block.settings.hero_image
+    assign hero_image_url = block.settings.hero_image | image_url: width: 2000
+  endif
+  if shop.brand.logo
+    assign brand_logo_url = shop.brand.logo | image_url: width: 500
+  endif
+-%}
+
+<div
+  class="pbs-hero {{ layout_class }} pbs-hero--align-{{ align }}"
+  style="
+    --pbs-hero-bg: {{ block.settings.color_background }};
+    --pbs-hero-heading: {{ block.settings.color_heading }};
+    --pbs-hero-text: {{ block.settings.color_text }};
+    --pbs-hero-muted: {{ block.settings.color_muted }};
+    --pbs-hero-cta-bg: {{ block.settings.color_cta_bg }};
+    --pbs-hero-cta-text: {{ block.settings.color_cta_text }};
+    --pbs-hero-cta-hover: {{ block.settings.color_cta_hover }};
+    --pbs-hero-border: {{ block.settings.color_border }};
+    --pbs-hero-accent: {{ block.settings.color_accent }};
+    --pbs-hero-overlay: {{ overlay_color }};
+    --pbs-hero-radius: {{ block.settings.media_radius }}px;
+    --pbs-hero-content-max: {{ block.settings.content_max_width }}px;
+    --pbs-hero-media-ratio: {{ block.settings.media_ratio }};
+  "
+>
+  <div class="pbs-hero__container">
+    <div class="pbs-hero__content">
+      {%- if show_brand -%}
+        <div class="pbs-hero__brand">
+          {%- if block.settings.brand_name != blank -%}
+            <span class="pbs-hero__brand-name">{{ block.settings.brand_name | escape }}</span>
+          {%- endif -%}
+          {%- if block.settings.brand_subname != blank -%}
+            <span class="pbs-hero__brand-subname">{{ block.settings.brand_subname | escape }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if heading_text != blank -%}
+        {%- if block.settings.seo_heading != blank -%}
+          <h1 class="pbs-hero__heading">{{ heading_text | escape }}</h1>
+        {%- else -%}
+          <h2 class="pbs-hero__heading">{{ heading_text | escape }}</h2>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if block.settings.tagline != blank -%}
+        <p class="pbs-hero__tagline">{{ block.settings.tagline | escape }}</p>
+      {%- endif -%}
+
+      {%- if show_cta -%}
+        <a href="{{ block.settings.cta_link }}" class="pbs-hero__cta">
+          {{ block.settings.cta_text | escape }}
+        </a>
+      {%- endif -%}
+
+      {%- if show_pillars -%}
+        <div class="pbs-hero__pillars">
+          {%- if block.settings.pillar_1 != blank -%}
+            <div class="pbs-hero__pillar">
+              <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
+              <span class="pbs-hero__pillar-text">{{ block.settings.pillar_1 | escape }}</span>
+            </div>
+          {%- endif -%}
+          {%- if block.settings.pillar_2 != blank -%}
+            <div class="pbs-hero__pillar">
+              <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
+              <span class="pbs-hero__pillar-text">{{ block.settings.pillar_2 | escape }}</span>
+            </div>
+          {%- endif -%}
+          {%- if block.settings.pillar_3 != blank -%}
+            <div class="pbs-hero__pillar">
+              <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
+              <span class="pbs-hero__pillar-text">{{ block.settings.pillar_3 | escape }}</span>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="pbs-hero__media">
+      {%- if block.settings.hero_image -%}
+        {{
+          block.settings.hero_image
+          | image_url: width: 2000
+          | image_tag:
+            class: 'pbs-hero__image',
+            widths: '600, 900, 1200, 1600, 2000',
+            sizes: image_sizes,
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: image_alt
+        }}
+      {%- else -%}
+        <div class="pbs-hero__placeholder">
+          <span>{{ 'pbs_hero.placeholder.image' | t }}</span>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{%- if block.settings.enable_schema -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": {{ page_title | default: shop.name | json }},
+      "description": {{ schema_description | json }},
+      "url": {{ canonical_url | json }}
+      {%- if hero_image_url -%}
+        ,"image": {{ hero_image_url | json }}
+      {%- endif -%}
+      ,"about": {
+        "@type": "Thing",
+        "name": {{ about_name | json }},
+        "description": {{ schema_description | json }}
+      },
+      "mainEntity": {
+        "@type": "WebPageElement",
+        "name": {{ block.settings.heading | json }},
+        "description": {{ block.settings.tagline | json }}
+        {%- if hero_image_url -%}
+          ,"image": {{ hero_image_url | json }}
+        {%- endif -%}
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": {{ 'pbs_hero.breadcrumb.home' | t | json }},
+            "item": {{ shop.url | json }}
+          }
+        ]
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": {{ shop.name | json }},
+        "url": {{ shop.url | json }}
+        {%- if brand_logo_url -%}
+          ,"logo": {{ brand_logo_url | json }}
+        {%- endif -%}
+      }
+      {%- if show_cta -%}
+        ,"potentialAction": [
+          {
+            "@type": "ViewAction",
+            "name": {{ block.settings.cta_text | json }},
+            "target": {{ block.settings.cta_link | json }}
+          }
+        ]
+      {%- endif -%}
+    }
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": {{ schema_brand | json }},
+      "url": {{ shop.url | json }},
+      "description": {{ schema_description | json }}
+      {%- if brand_logo_url -%}
+        ,"logo": {{ brand_logo_url | json }}
+      {%- endif -%}
+      {%- if social_urls != blank -%}
+        ,"sameAs": [
+          {%- for url in social_list -%}
+            {{ url | json }}{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      {%- endif -%}
+      ,"brand": {
+        "@type": "Brand",
+        "name": {{ schema_brand | json }}
+      }
+    }
+  </script>
+
+  {%- if template.name == 'collection' and collection -%}
+    {%- if collection.image -%}
+      {%- assign collection_image_url = collection.image | image_url: width: 1200 -%}
+    {%- endif -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": {{ collection.title | json }},
+        "description": {{ collection.description | json }},
+        "url": {{ shop.url | append: collection.url | json }}
+        {%- if collection_image_url -%}
+          ,"image": {{ collection_image_url | json }}
+        {%- endif -%}
+        ,"hasPart": {
+          "@type": "ItemList",
+          "itemListElement": [
+            {%- for product in collection.products limit: 10 -%}
+              {
+                "@type": "ListItem",
+                "position": {{ forloop.index }},
+                "url": {{ shop.url | append: product.url | json }}
+              }{% unless forloop.last %},{% endunless %}
+            {%- endfor -%}
+          ]
+        }
+      }
+    </script>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:name",
+  "target": "section",
+  "stylesheet": "pbs-hero.css",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:headers.content"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "t:labels.hero_image",
+      "info": "t:infos.hero_image"
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "t:labels.brand_name",
+      "info": "t:infos.brand_name"
+    },
+    {
+      "type": "text",
+      "id": "brand_subname",
+      "label": "t:labels.brand_subname"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "A calm ritual for your skin"
+    },
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "t:labels.tagline",
+      "default": "Science-led skincare inspired by the ocean. Made for you."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "t:labels.cta_text",
+      "default": "Discover collection"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "t:labels.cta_link"
+    },
+    {
+      "type": "header",
+      "content": "t:headers.layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "t:labels.layout",
+      "options": [
+        { "value": "split", "label": "t:options.layout_split" },
+        { "value": "full_bleed", "label": "t:options.layout_full_bleed" }
+      ],
+      "default": "split"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "t:labels.content_position",
+      "info": "t:infos.content_position",
+      "options": [
+        { "value": "start", "label": "t:options.align_start" },
+        { "value": "center", "label": "t:options.align_center" },
+        { "value": "end", "label": "t:options.align_end" }
+      ],
+      "default": "start"
+    },
+    {
+      "type": "select",
+      "id": "media_ratio",
+      "label": "t:labels.media_ratio",
+      "info": "t:infos.media_ratio",
+      "options": [
+        { "value": "3 / 4", "label": "t:options.ratio_portrait" },
+        { "value": "4 / 5", "label": "t:options.ratio_tall" },
+        { "value": "1 / 1", "label": "t:options.ratio_square" },
+        { "value": "4 / 3", "label": "t:options.ratio_landscape" },
+        { "value": "16 / 9", "label": "t:options.ratio_wide" }
+      ],
+      "default": "3 / 4"
+    },
+    {
+      "type": "header",
+      "content": "t:headers.pillars"
+    },
+    {
+      "type": "text",
+      "id": "pillar_1",
+      "label": "t:labels.pillar_1",
+      "default": "Curated essentials"
+    },
+    {
+      "type": "text",
+      "id": "pillar_2",
+      "label": "t:labels.pillar_2",
+      "default": "Your daily ritual"
+    },
+    {
+      "type": "text",
+      "id": "pillar_3",
+      "label": "t:labels.pillar_3",
+      "default": "Mind, skin and mood"
+    },
+    {
+      "type": "header",
+      "content": "t:headers.appearance"
+    },
+    {
+      "type": "color",
+      "id": "color_background",
+      "label": "t:labels.color_background",
+      "default": "#fcf9f6"
+    },
+    {
+      "type": "color",
+      "id": "color_heading",
+      "label": "t:labels.color_heading",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "t:labels.color_text",
+      "default": "#555555"
+    },
+    {
+      "type": "color",
+      "id": "color_muted",
+      "label": "t:labels.color_muted",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "color_cta_bg",
+      "label": "t:labels.color_cta_bg",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "color_cta_text",
+      "label": "t:labels.color_cta_text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_cta_hover",
+      "label": "t:labels.color_cta_hover",
+      "default": "#444444"
+    },
+    {
+      "type": "color",
+      "id": "color_border",
+      "label": "t:labels.color_border",
+      "default": "#e8e0d8"
+    },
+    {
+      "type": "color",
+      "id": "color_accent",
+      "label": "t:labels.color_accent",
+      "default": "#b8a89a"
+    },
+    {
+      "type": "color",
+      "id": "color_overlay",
+      "label": "t:labels.color_overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "t:labels.overlay_opacity",
+      "info": "t:infos.overlay_opacity",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "media_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "t:labels.media_radius",
+      "info": "t:infos.media_radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 320,
+      "max": 720,
+      "step": 20,
+      "unit": "px",
+      "label": "t:labels.content_max_width",
+      "default": 580
+    },
+    {
+      "type": "header",
+      "content": "t:headers.seo"
+    },
+    {
+      "type": "text",
+      "id": "seo_heading",
+      "label": "t:labels.seo_heading",
+      "info": "t:infos.seo_heading"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "t:labels.image_alt",
+      "info": "t:infos.image_alt"
+    },
+    {
+      "type": "header",
+      "content": "t:headers.schema"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_schema",
+      "label": "t:labels.enable_schema",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "schema_brand_name",
+      "label": "t:labels.schema_brand_name"
+    },
+    {
+      "type": "textarea",
+      "id": "schema_description",
+      "label": "t:labels.schema_description",
+      "info": "t:infos.schema_description"
+    },
+    {
+      "type": "url",
+      "id": "social_url_1",
+      "label": "t:labels.social_url_1"
+    },
+    {
+      "type": "url",
+      "id": "social_url_2",
+      "label": "t:labels.social_url_2"
+    },
+    {
+      "type": "url",
+      "id": "social_url_3",
+      "label": "t:labels.social_url_3"
+    }
+  ]
+}
+{% endschema %}
