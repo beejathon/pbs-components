@@ -79,6 +79,57 @@
     --pbs-hero-media-ratio: {{ block.settings.media_ratio }};
   "
 >
+  {%- capture pbs_hero_media -%}
+    <div class="pbs-hero__media">
+      {%- if block.settings.hero_image -%}
+        {{
+          block.settings.hero_image
+          | image_url: width: 2000
+          | image_tag:
+            class: 'pbs-hero__image',
+            widths: '600, 900, 1200, 1600, 2000',
+            sizes: image_sizes,
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: image_alt
+        }}
+      {%- else -%}
+        <div class="pbs-hero__placeholder">
+          <span>{{ 'pbs_hero.placeholder.image' | t }}</span>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endcapture -%}
+
+  {%- capture pbs_hero_pillars -%}
+    {%- if show_pillars -%}
+      <div class="pbs-hero__pillars">
+        {%- if block.settings.pillar_1 != blank -%}
+          <div class="pbs-hero__pillar">
+            <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
+            <span class="pbs-hero__pillar-text">{{ block.settings.pillar_1 | escape }}</span>
+          </div>
+        {%- endif -%}
+        {%- if block.settings.pillar_2 != blank -%}
+          <div class="pbs-hero__pillar">
+            <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
+            <span class="pbs-hero__pillar-text">{{ block.settings.pillar_2 | escape }}</span>
+          </div>
+        {%- endif -%}
+        {%- if block.settings.pillar_3 != blank -%}
+          <div class="pbs-hero__pillar">
+            <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
+            <span class="pbs-hero__pillar-text">{{ block.settings.pillar_3 | escape }}</span>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- if layout == 'full_bleed' -%}
+    {{ pbs_hero_media }}
+  {%- endif -%}
+
   <div class="pbs-hero__container">
     <div class="pbs-hero__content">
       {%- if show_brand -%}
@@ -110,49 +161,18 @@
         </a>
       {%- endif -%}
 
-      {%- if show_pillars -%}
-        <div class="pbs-hero__pillars">
-          {%- if block.settings.pillar_1 != blank -%}
-            <div class="pbs-hero__pillar">
-              <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
-              <span class="pbs-hero__pillar-text">{{ block.settings.pillar_1 | escape }}</span>
-            </div>
-          {%- endif -%}
-          {%- if block.settings.pillar_2 != blank -%}
-            <div class="pbs-hero__pillar">
-              <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
-              <span class="pbs-hero__pillar-text">{{ block.settings.pillar_2 | escape }}</span>
-            </div>
-          {%- endif -%}
-          {%- if block.settings.pillar_3 != blank -%}
-            <div class="pbs-hero__pillar">
-              <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
-              <span class="pbs-hero__pillar-text">{{ block.settings.pillar_3 | escape }}</span>
-            </div>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
+      {%- unless layout == 'full_bleed' -%}
+        {{ pbs_hero_pillars }}
+      {%- endunless -%}
     </div>
 
-    <div class="pbs-hero__media">
-      {%- if block.settings.hero_image -%}
-        {{
-          block.settings.hero_image
-          | image_url: width: 2000
-          | image_tag:
-            class: 'pbs-hero__image',
-            widths: '600, 900, 1200, 1600, 2000',
-            sizes: image_sizes,
-            loading: 'eager',
-            fetchpriority: 'high',
-            alt: image_alt
-        }}
-      {%- else -%}
-        <div class="pbs-hero__placeholder">
-          <span>{{ 'pbs_hero.placeholder.image' | t }}</span>
-        </div>
-      {%- endif -%}
-    </div>
+    {%- unless layout == 'full_bleed' -%}
+      {{ pbs_hero_media }}
+    {%- endunless -%}
+
+    {%- if layout == 'full_bleed' -%}
+      {{ pbs_hero_pillars }}
+    {%- endif -%}
   </div>
 </div>
 
