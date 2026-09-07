@@ -259,11 +259,8 @@ a.pbs-hero__card:hover .pbs-hero__card-arrow {
 
 .pbs-hero--full-bleed::after {
   position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
+  inset: 0;
   z-index: 1;
-  height: 100svh;
   pointer-events: none;
   content: "";
   background: var(--pbs-hero-overlay);
@@ -304,14 +301,12 @@ a.pbs-hero__card:hover .pbs-hero__card-arrow {
 
 .pbs-hero--full-bleed .pbs-hero__media {
   position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
+  inset: 0;
   z-index: 0;
   order: 0;
   overflow: hidden;
   width: 100%;
-  height: 100svh;
+  height: auto;
   max-width: none;
 }
 

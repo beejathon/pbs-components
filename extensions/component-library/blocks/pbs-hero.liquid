@@ -44,6 +44,16 @@
   if shop.brand.logo
     assign brand_logo_url = shop.brand.logo | image_url: width: 500
   endif
+
+  unless section.index > 1
+    assign hero_loading = 'eager'
+    assign hero_fetchpriority = 'high'
+    assign hero_preload = true
+  else
+    assign hero_loading = 'lazy'
+    assign hero_fetchpriority = 'auto'
+    assign hero_preload = false
+  endunless
 -%}
 
 <div
@@ -61,7 +71,12 @@
   "
 >
   {%- capture pbs_hero_media -%}
-    <div class="pbs-hero__media">
+    <div
+      class="pbs-hero__media"
+      {% if layout == 'split' %}
+        style="aspect-ratio: var(--pbs-hero-media-ratio);"
+      {% endif %}
+    >
       {%- if block.settings.hero_image != blank and block.settings.hero_image_mobile != blank -%}
         <picture>
           <source
@@ -76,6 +91,19 @@
             width="{{ block.settings.hero_image_mobile.width }}"
             height="{{ block.settings.hero_image_mobile.height }}"
           >
+          <source
+            media="(min-width: 769px)"
+            srcset="
+              {{ block.settings.hero_image | image_url: width: 600 }} 600w,
+              {{ block.settings.hero_image | image_url: width: 900 }} 900w,
+              {{ block.settings.hero_image | image_url: width: 1200 }} 1200w,
+              {{ block.settings.hero_image | image_url: width: 1600 }} 1600w,
+              {{ block.settings.hero_image | image_url: width: 2000 }} 2000w
+            "
+            sizes="{{ image_sizes }}"
+            width="{{ block.settings.hero_image.width }}"
+            height="{{ block.settings.hero_image.height }}"
+          >
           {{
             block.settings.hero_image
             | image_url: width: 2000
@@ -83,11 +111,24 @@
               class: 'pbs-hero__image',
               widths: '600, 900, 1200, 1600, 2000',
               sizes: image_sizes,
-              loading: 'eager',
-              fetchpriority: 'high',
+              loading: hero_loading,
+              fetchpriority: hero_fetchpriority,
               alt: image_alt
           }}
         </picture>
+      {%- elsif block.settings.hero_image != blank and hero_preload -%}
+        {{
+          block.settings.hero_image
+          | image_url: width: 2000
+          | image_tag:
+            class: 'pbs-hero__image',
+            widths: '600, 900, 1200, 1600, 2000',
+            sizes: image_sizes,
+            loading: hero_loading,
+            fetchpriority: hero_fetchpriority,
+            preload: true,
+            alt: image_alt
+        }}
       {%- elsif block.settings.hero_image != blank -%}
         {{
           block.settings.hero_image
@@ -96,8 +137,21 @@
             class: 'pbs-hero__image',
             widths: '600, 900, 1200, 1600, 2000',
             sizes: image_sizes,
-            loading: 'eager',
-            fetchpriority: 'high',
+            loading: hero_loading,
+            fetchpriority: hero_fetchpriority,
+            alt: image_alt
+        }}
+      {%- elsif block.settings.hero_image_mobile != blank and hero_preload -%}
+        {{
+          block.settings.hero_image_mobile
+          | image_url: width: 1200
+          | image_tag:
+            class: 'pbs-hero__image',
+            widths: '400, 600, 800, 1200',
+            sizes: image_sizes,
+            loading: hero_loading,
+            fetchpriority: hero_fetchpriority,
+            preload: true,
             alt: image_alt
         }}
       {%- elsif block.settings.hero_image_mobile != blank -%}
@@ -108,8 +162,8 @@
             class: 'pbs-hero__image',
             widths: '400, 600, 800, 1200',
             sizes: image_sizes,
-            loading: 'eager',
-            fetchpriority: 'high',
+            loading: hero_loading,
+            fetchpriority: hero_fetchpriority,
             alt: image_alt
         }}
       {%- else -%}
@@ -132,6 +186,16 @@
 
   {%- if layout == 'full_bleed' -%}
     {{ pbs_hero_media }}
+  {%- endif -%}
+
+  {%- if layout == 'full_bleed' -%}
+    <style>
+      @media (max-width: 768px) {
+        .pbs-hero--full-bleed .pbs-hero__content {
+          min-height: 100svh;
+        }
+      }
+    </style>
   {%- endif -%}
 
   <div class="pbs-hero__container">
@@ -295,10 +359,22 @@
       "default": "A calm ritual for your skin"
     },
     {
+      "type": "color",
+      "id": "color_heading",
+      "label": "t:labels.color_heading",
+      "default": "#1a1a1a"
+    },
+    {
       "type": "textarea",
       "id": "tagline",
       "label": "t:labels.tagline",
       "default": "Science-led skincare inspired by the ocean. Made for you."
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "t:labels.color_text",
+      "default": "#555555"
     },
     {
       "type": "text",
@@ -532,18 +608,6 @@
       "id": "color_background",
       "label": "t:labels.color_background",
       "default": "#fcf9f6"
-    },
-    {
-      "type": "color",
-      "id": "color_heading",
-      "label": "t:labels.color_heading",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "color",
-      "id": "color_text",
-      "label": "t:labels.color_text",
-      "default": "#555555"
     },
     {
       "type": "color",
