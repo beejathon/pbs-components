@@ -8,6 +8,7 @@
   },
   "labels": {
     "hero_image": "Hero image",
+    "hero_image_mobile": "Mobile image",
     "heading": "Heading",
     "tagline": "Tagline",
     "cta_text": "Button label",
@@ -34,7 +35,8 @@
     "media_radius": "Image corner radius"
   },
   "infos": {
-    "hero_image": "Shown as the split-column image or the full-bleed background.",
+    "hero_image": "Shown as the split-column image or the full-bleed background. Used from 769px wide when a mobile image is set.",
+    "hero_image_mobile": "Optional. Used below 769px. Falls back to the hero image if empty.",
     "content_position": "Used in the full-bleed layout.",
     "media_ratio": "Used in the split layout.",
     "card_1_link": "Card 1. Link to a product, collection, blog post, or page.",
