@@ -95,7 +95,7 @@
   position: relative;
   display: block;
   overflow: hidden;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 3;
   color: var(--pbs-card-text);
   text-decoration: none;
   background-color: var(--pbs-card-bg);
@@ -207,7 +207,15 @@
 }
 
 .shopify-section:has(.pbs-hero--full-bleed),
-.shopify-section:has(.pbs-hero--full-bleed) :is(.section, .section--page-width, .spacing-style, .padding-style, .shopify-block, .shopify-app-block) {
+.shopify-section:has(.pbs-hero--full-bleed)
+  :is(
+    .section,
+    .section--page-width,
+    .spacing-style,
+    .padding-style,
+    .shopify-block,
+    .shopify-app-block
+  ) {
   width: 100%;
   max-width: none;
   padding-inline: 0;
@@ -215,8 +223,11 @@
   overflow: visible;
 }
 
-:is(main, #MainContent) > .shopify-section:first-child:has(.pbs-hero--full-bleed) :is(.section, .spacing-style, .padding-style),
-.shopify-section:has(.pbs-hero--full-bleed) :is(.spacing-style, .padding-style) {
+:is(main, #MainContent)
+  > .shopify-section:first-child:has(.pbs-hero--full-bleed)
+  :is(.section, .spacing-style, .padding-style),
+.shopify-section:has(.pbs-hero--full-bleed)
+  :is(.spacing-style, .padding-style) {
   --transparent-header-offset-boolean: 0;
   --section-top-offset: 0px;
   padding-block-start: 0;
@@ -253,8 +264,10 @@
   width: 100%;
   max-width: 80rem;
   min-height: inherit;
-  padding: 2.5rem 1.25rem 3rem;
-  padding-block-start: calc(var(--header-group-height, var(--header-height, 0px)) + 2.5rem);
+  padding: 2.5rem 1rem 3rem;
+  padding-block-start: calc(
+    var(--header-group-height, var(--header-height, 0px)) + 4rem
+  );
 }
 
 .pbs-hero--full-bleed .pbs-hero__content {
@@ -338,8 +351,8 @@
     width: auto;
   }
 
-
   .pbs-hero__heading {
+    margin-top: 4rem;
     font-size: 3rem;
   }
 
@@ -348,14 +361,15 @@
   }
 
   .pbs-hero--full-bleed .pbs-hero__container {
-    padding: 4rem 3rem 3.5rem;
-    padding-block-start: calc(var(--header-group-height, var(--header-height, 0px)) + 4rem);
+    padding: 4rem 2rem 3.5rem;
+    padding-block-start: calc(
+      var(--header-group-height, var(--header-height, 0px)) + 5rem
+    );
   }
 
   .pbs-hero--full-bleed.pbs-hero--align-center .pbs-hero__container {
     align-items: center;
   }
-
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {

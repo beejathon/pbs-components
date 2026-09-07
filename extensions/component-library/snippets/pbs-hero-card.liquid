@@ -21,6 +21,16 @@
   assign card_overlay_alpha = settings.card_overlay_opacity | times: 0.01
   assign card_overlay = settings.card_overlay | color_modify: 'alpha', card_overlay_alpha
   assign card_alt = card_title | default: fallback_alt
+
+  if index == 1
+    assign card_fallback = 'pbs-hero-card-shop.png'
+  elsif index == 2
+    assign card_fallback = 'pbs-hero-card-routine.png'
+  elsif index == 3
+    assign card_fallback = 'pbs-hero-card-journal.png'
+  else
+    assign card_fallback = 'pbs-hero-card-profile.png'
+  endif
 -%}
 
 {%- if card_title != blank or card_url != blank -%}
@@ -46,8 +56,8 @@
       "
     >
   {%- endif -%}
-    {%- if card_image != blank -%}
-      <div class="pbs-hero__card-media">
+    <div class="pbs-hero__card-media">
+      {%- if card_image != blank -%}
         {{
           card_image
           | image_url: width: 900
@@ -58,8 +68,17 @@
             loading: 'lazy',
             alt: card_alt
         }}
-      </div>
-    {%- endif -%}
+      {%- else -%}
+        <img
+          src="{{ card_fallback | asset_url }}"
+          class="pbs-hero__card-image"
+          alt="{{ card_alt | escape }}"
+          width="900"
+          height="1200"
+          loading="lazy"
+        >
+      {%- endif -%}
+    </div>
     <span class="pbs-hero__card-overlay"></span>
     <span class="pbs-hero__card-body">
       {%- if card_title != blank -%}
