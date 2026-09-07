@@ -2,63 +2,24 @@
   Renders a single hero card from block settings for the given index.
 
   @param {object} settings - Block settings containing card_* values
-  @param {number} index - Card slot number (1–6)
+  @param {number} index - Card slot number (1–4)
   @param {string} [fallback_alt] - Alt text used when the card has no title
   @example
   {% render 'pbs-hero-card', settings: block.settings, index: 1, fallback_alt: heading_text %}
 {% enddoc %}
 
 {%- liquid
-  assign product_key = 'card_' | append: index | append: '_product'
-  assign collection_key = 'card_' | append: index | append: '_collection'
-  assign article_key = 'card_' | append: index | append: '_article'
+  assign link_key = 'card_' | append: index | append: '_link'
   assign title_key = 'card_' | append: index | append: '_title'
   assign subtitle_key = 'card_' | append: index | append: '_subtitle'
   assign image_key = 'card_' | append: index | append: '_image'
-  assign bg_key = 'card_' | append: index | append: '_bg_color'
-  assign overlay_key = 'card_' | append: index | append: '_overlay'
-  assign opacity_key = 'card_' | append: index | append: '_overlay_opacity'
-  assign text_key = 'card_' | append: index | append: '_text_color'
-  assign border_color_key = 'card_' | append: index | append: '_border_color'
-  assign border_width_key = 'card_' | append: index | append: '_border_width'
-  assign radius_key = 'card_' | append: index | append: '_radius'
 
-  assign card_url = blank
+  assign card_url = settings[link_key]
   assign card_title = settings[title_key]
   assign card_subtitle = settings[subtitle_key]
   assign card_image = settings[image_key]
-
-  if settings[product_key] != blank
-    assign card_resource = settings[product_key]
-    assign card_url = card_resource.url
-    if card_title == blank
-      assign card_title = card_resource.title
-    endif
-    if card_image == blank
-      assign card_image = card_resource.featured_image
-    endif
-  elsif settings[collection_key] != blank
-    assign card_resource = settings[collection_key]
-    assign card_url = card_resource.url
-    if card_title == blank
-      assign card_title = card_resource.title
-    endif
-    if card_image == blank
-      assign card_image = card_resource.image
-    endif
-  elsif settings[article_key] != blank
-    assign card_resource = settings[article_key]
-    assign card_url = card_resource.url
-    if card_title == blank
-      assign card_title = card_resource.title
-    endif
-    if card_image == blank
-      assign card_image = card_resource.image
-    endif
-  endif
-
-  assign card_overlay_alpha = settings[opacity_key] | times: 0.01
-  assign card_overlay = settings[overlay_key] | color_modify: 'alpha', card_overlay_alpha
+  assign card_overlay_alpha = settings.card_overlay_opacity | times: 0.01
+  assign card_overlay = settings.card_overlay | color_modify: 'alpha', card_overlay_alpha
   assign card_alt = card_title | default: fallback_alt
 -%}
 
@@ -68,22 +29,20 @@
       href="{{ card_url }}"
       class="pbs-hero__card"
       style="
-        --pbs-card-bg: {{ settings[bg_key] }};
+        --pbs-card-bg: {{ settings.card_bg_color }};
         --pbs-card-overlay: {{ card_overlay }};
-        --pbs-card-text: {{ settings[text_key] }};
-        --pbs-card-border: {{ settings[border_width_key] }}px solid {{ settings[border_color_key] }};
-        --pbs-card-radius: {{ settings[radius_key] }}px;
+        --pbs-card-text: {{ settings.card_text_color }};
+        --pbs-card-radius: {{ settings.card_radius }}px;
       "
     >
   {%- else -%}
     <div
       class="pbs-hero__card"
       style="
-        --pbs-card-bg: {{ settings[bg_key] }};
+        --pbs-card-bg: {{ settings.card_bg_color }};
         --pbs-card-overlay: {{ card_overlay }};
-        --pbs-card-text: {{ settings[text_key] }};
-        --pbs-card-border: {{ settings[border_width_key] }}px solid {{ settings[border_color_key] }};
-        --pbs-card-radius: {{ settings[radius_key] }}px;
+        --pbs-card-text: {{ settings.card_text_color }};
+        --pbs-card-radius: {{ settings.card_radius }}px;
       "
     >
   {%- endif -%}
