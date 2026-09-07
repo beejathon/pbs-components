@@ -1,0 +1,124 @@
+{% doc %}
+  Renders a single hero card from block settings for the given index.
+
+  @param {object} settings - Block settings containing card_* values
+  @param {number} index - Card slot number (1–6)
+  @param {string} [fallback_alt] - Alt text used when the card has no title
+  @example
+  {% render 'pbs-hero-card', settings: block.settings, index: 1, fallback_alt: heading_text %}
+{% enddoc %}
+
+{%- liquid
+  assign product_key = 'card_' | append: index | append: '_product'
+  assign collection_key = 'card_' | append: index | append: '_collection'
+  assign article_key = 'card_' | append: index | append: '_article'
+  assign title_key = 'card_' | append: index | append: '_title'
+  assign subtitle_key = 'card_' | append: index | append: '_subtitle'
+  assign image_key = 'card_' | append: index | append: '_image'
+  assign bg_key = 'card_' | append: index | append: '_bg_color'
+  assign overlay_key = 'card_' | append: index | append: '_overlay'
+  assign opacity_key = 'card_' | append: index | append: '_overlay_opacity'
+  assign text_key = 'card_' | append: index | append: '_text_color'
+  assign border_color_key = 'card_' | append: index | append: '_border_color'
+  assign border_width_key = 'card_' | append: index | append: '_border_width'
+  assign radius_key = 'card_' | append: index | append: '_radius'
+
+  assign card_url = blank
+  assign card_title = settings[title_key]
+  assign card_subtitle = settings[subtitle_key]
+  assign card_image = settings[image_key]
+
+  if settings[product_key] != blank
+    assign card_resource = settings[product_key]
+    assign card_url = card_resource.url
+    if card_title == blank
+      assign card_title = card_resource.title
+    endif
+    if card_image == blank
+      assign card_image = card_resource.featured_image
+    endif
+  elsif settings[collection_key] != blank
+    assign card_resource = settings[collection_key]
+    assign card_url = card_resource.url
+    if card_title == blank
+      assign card_title = card_resource.title
+    endif
+    if card_image == blank
+      assign card_image = card_resource.image
+    endif
+  elsif settings[article_key] != blank
+    assign card_resource = settings[article_key]
+    assign card_url = card_resource.url
+    if card_title == blank
+      assign card_title = card_resource.title
+    endif
+    if card_image == blank
+      assign card_image = card_resource.image
+    endif
+  endif
+
+  assign card_overlay_alpha = settings[opacity_key] | times: 0.01
+  assign card_overlay = settings[overlay_key] | color_modify: 'alpha', card_overlay_alpha
+  assign card_alt = card_title | default: fallback_alt
+-%}
+
+{%- if card_title != blank or card_url != blank -%}
+  {%- if card_url != blank -%}
+    <a
+      href="{{ card_url }}"
+      class="pbs-hero__card"
+      style="
+        --pbs-card-bg: {{ settings[bg_key] }};
+        --pbs-card-overlay: {{ card_overlay }};
+        --pbs-card-text: {{ settings[text_key] }};
+        --pbs-card-border: {{ settings[border_width_key] }}px solid {{ settings[border_color_key] }};
+        --pbs-card-radius: {{ settings[radius_key] }}px;
+      "
+    >
+  {%- else -%}
+    <div
+      class="pbs-hero__card"
+      style="
+        --pbs-card-bg: {{ settings[bg_key] }};
+        --pbs-card-overlay: {{ card_overlay }};
+        --pbs-card-text: {{ settings[text_key] }};
+        --pbs-card-border: {{ settings[border_width_key] }}px solid {{ settings[border_color_key] }};
+        --pbs-card-radius: {{ settings[radius_key] }}px;
+      "
+    >
+  {%- endif -%}
+    {%- if card_image != blank -%}
+      <div class="pbs-hero__card-media">
+        {{
+          card_image
+          | image_url: width: 900
+          | image_tag:
+            class: 'pbs-hero__card-image',
+            widths: '400, 600, 900',
+            sizes: '(min-width: 1024px) 25vw, (min-width: 769px) 50vw, 100vw',
+            loading: 'lazy',
+            alt: card_alt
+        }}
+      </div>
+    {%- endif -%}
+    <span class="pbs-hero__card-overlay"></span>
+    <span class="pbs-hero__card-body">
+      {%- if card_title != blank -%}
+        <span class="pbs-hero__card-title">{{ card_title | escape }}</span>
+      {%- endif -%}
+      {%- if card_subtitle != blank -%}
+        <span class="pbs-hero__card-subtitle">{{ card_subtitle | escape }}</span>
+      {%- endif -%}
+    </span>
+    <span class="pbs-hero__card-arrow" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false">
+        <circle cx="12" cy="12" r="10.25"></circle>
+        <path d="M10 8.5 14.5 12 10 15.5"></path>
+      </svg>
+    </span>
+  {%- if card_url != blank -%}
+    </a>
+  {%- else -%}
+    </div>
+  {%- endif -%}
+{%- endif -%}

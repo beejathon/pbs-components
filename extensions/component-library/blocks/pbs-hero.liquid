@@ -24,10 +24,17 @@
     assign show_cta = true
   endif
 
-  assign show_pillars = false
-  if block.settings.pillar_1 != blank or block.settings.pillar_2 != blank or block.settings.pillar_3 != blank
-    assign show_pillars = true
-  endif
+  assign card_count = block.settings.card_count | default: 4
+  assign show_cards = false
+  for i in (1..card_count)
+    assign product_key = 'card_' | append: i | append: '_product'
+    assign collection_key = 'card_' | append: i | append: '_collection'
+    assign article_key = 'card_' | append: i | append: '_article'
+    assign title_key = 'card_' | append: i | append: '_title'
+    if block.settings[product_key] != blank or block.settings[collection_key] != blank or block.settings[article_key] != blank or block.settings[title_key] != blank
+      assign show_cards = true
+    endif
+  endfor
 
   assign schema_brand = block.settings.schema_brand_name | default: shop.name
   assign schema_description = block.settings.schema_description | default: block.settings.tagline | default: page_description
@@ -101,27 +108,12 @@
     </div>
   {%- endcapture -%}
 
-  {%- capture pbs_hero_pillars -%}
-    {%- if show_pillars -%}
-      <div class="pbs-hero__pillars">
-        {%- if block.settings.pillar_1 != blank -%}
-          <div class="pbs-hero__pillar">
-            <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
-            <span class="pbs-hero__pillar-text">{{ block.settings.pillar_1 | escape }}</span>
-          </div>
-        {%- endif -%}
-        {%- if block.settings.pillar_2 != blank -%}
-          <div class="pbs-hero__pillar">
-            <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
-            <span class="pbs-hero__pillar-text">{{ block.settings.pillar_2 | escape }}</span>
-          </div>
-        {%- endif -%}
-        {%- if block.settings.pillar_3 != blank -%}
-          <div class="pbs-hero__pillar">
-            <span class="pbs-hero__pillar-icon" aria-hidden="true">✦</span>
-            <span class="pbs-hero__pillar-text">{{ block.settings.pillar_3 | escape }}</span>
-          </div>
-        {%- endif -%}
+  {%- capture pbs_hero_cards -%}
+    {%- if show_cards -%}
+      <div class="pbs-hero__cards">
+        {%- for i in (1..card_count) -%}
+          {% render 'pbs-hero-card', settings: block.settings, index: i, fallback_alt: heading_text %}
+        {%- endfor -%}
       </div>
     {%- endif -%}
   {%- endcapture -%}
@@ -162,7 +154,7 @@
       {%- endif -%}
 
       {%- unless layout == 'full_bleed' -%}
-        {{ pbs_hero_pillars }}
+        {{ pbs_hero_cards }}
       {%- endunless -%}
     </div>
 
@@ -171,7 +163,7 @@
     {%- endunless -%}
 
     {%- if layout == 'full_bleed' -%}
-      {{ pbs_hero_pillars }}
+      {{ pbs_hero_cards }}
     {%- endif -%}
   </div>
 </div>
@@ -378,25 +370,571 @@
     },
     {
       "type": "header",
-      "content": "t:headers.pillars"
+      "content": "t:headers.cards"
+    },
+    {
+      "type": "range",
+      "id": "card_count",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "label": "t:labels.card_count",
+      "info": "t:infos.card_count",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "t:headers.card_1"
+    },
+    {
+      "type": "product",
+      "id": "card_1_product",
+      "label": "t:labels.card_product",
+      "info": "t:infos.card_resource"
+    },
+    {
+      "type": "collection",
+      "id": "card_1_collection",
+      "label": "t:labels.card_collection"
+    },
+    {
+      "type": "article",
+      "id": "card_1_article",
+      "label": "t:labels.card_article"
     },
     {
       "type": "text",
-      "id": "pillar_1",
-      "label": "t:labels.pillar_1",
+      "id": "card_1_title",
+      "label": "t:labels.card_title",
+      "info": "t:infos.card_title",
+      "default": "Shop"
+    },
+    {
+      "type": "text",
+      "id": "card_1_subtitle",
+      "label": "t:labels.card_subtitle",
       "default": "Curated essentials"
     },
     {
-      "type": "text",
-      "id": "pillar_2",
-      "label": "t:labels.pillar_2",
-      "default": "Your daily ritual"
+      "type": "image_picker",
+      "id": "card_1_image",
+      "label": "t:labels.card_image",
+      "info": "t:infos.card_image"
+    },
+    {
+      "type": "color",
+      "id": "card_1_bg_color",
+      "label": "t:labels.card_bg_color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "card_1_overlay",
+      "label": "t:labels.card_overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "card_1_overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "t:labels.card_overlay_opacity",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "card_1_text_color",
+      "label": "t:labels.card_text_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_1_border_color",
+      "label": "t:labels.card_border_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_1_border_width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "t:labels.card_border_width",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_1_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "t:labels.card_radius",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "t:headers.card_2"
+    },
+    {
+      "type": "product",
+      "id": "card_2_product",
+      "label": "t:labels.card_product",
+      "info": "t:infos.card_resource"
+    },
+    {
+      "type": "collection",
+      "id": "card_2_collection",
+      "label": "t:labels.card_collection"
+    },
+    {
+      "type": "article",
+      "id": "card_2_article",
+      "label": "t:labels.card_article"
     },
     {
       "type": "text",
-      "id": "pillar_3",
-      "label": "t:labels.pillar_3",
+      "id": "card_2_title",
+      "label": "t:labels.card_title",
+      "info": "t:infos.card_title",
+      "default": "Routine"
+    },
+    {
+      "type": "text",
+      "id": "card_2_subtitle",
+      "label": "t:labels.card_subtitle",
+      "default": "Your daily ritual"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_2_image",
+      "label": "t:labels.card_image",
+      "info": "t:infos.card_image"
+    },
+    {
+      "type": "color",
+      "id": "card_2_bg_color",
+      "label": "t:labels.card_bg_color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "card_2_overlay",
+      "label": "t:labels.card_overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "card_2_overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "t:labels.card_overlay_opacity",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "card_2_text_color",
+      "label": "t:labels.card_text_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_2_border_color",
+      "label": "t:labels.card_border_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_2_border_width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "t:labels.card_border_width",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_2_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "t:labels.card_radius",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "t:headers.card_3"
+    },
+    {
+      "type": "product",
+      "id": "card_3_product",
+      "label": "t:labels.card_product",
+      "info": "t:infos.card_resource"
+    },
+    {
+      "type": "collection",
+      "id": "card_3_collection",
+      "label": "t:labels.card_collection"
+    },
+    {
+      "type": "article",
+      "id": "card_3_article",
+      "label": "t:labels.card_article"
+    },
+    {
+      "type": "text",
+      "id": "card_3_title",
+      "label": "t:labels.card_title",
+      "info": "t:infos.card_title",
+      "default": "Journal"
+    },
+    {
+      "type": "text",
+      "id": "card_3_subtitle",
+      "label": "t:labels.card_subtitle",
       "default": "Mind, skin and mood"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_3_image",
+      "label": "t:labels.card_image",
+      "info": "t:infos.card_image"
+    },
+    {
+      "type": "color",
+      "id": "card_3_bg_color",
+      "label": "t:labels.card_bg_color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "card_3_overlay",
+      "label": "t:labels.card_overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "card_3_overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "t:labels.card_overlay_opacity",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "card_3_text_color",
+      "label": "t:labels.card_text_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_3_border_color",
+      "label": "t:labels.card_border_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_3_border_width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "t:labels.card_border_width",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_3_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "t:labels.card_radius",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "t:headers.card_4"
+    },
+    {
+      "type": "product",
+      "id": "card_4_product",
+      "label": "t:labels.card_product",
+      "info": "t:infos.card_resource"
+    },
+    {
+      "type": "collection",
+      "id": "card_4_collection",
+      "label": "t:labels.card_collection"
+    },
+    {
+      "type": "article",
+      "id": "card_4_article",
+      "label": "t:labels.card_article"
+    },
+    {
+      "type": "text",
+      "id": "card_4_title",
+      "label": "t:labels.card_title",
+      "info": "t:infos.card_title",
+      "default": "Profile"
+    },
+    {
+      "type": "text",
+      "id": "card_4_subtitle",
+      "label": "t:labels.card_subtitle",
+      "default": "Your space"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_4_image",
+      "label": "t:labels.card_image",
+      "info": "t:infos.card_image"
+    },
+    {
+      "type": "color",
+      "id": "card_4_bg_color",
+      "label": "t:labels.card_bg_color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "card_4_overlay",
+      "label": "t:labels.card_overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "card_4_overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "t:labels.card_overlay_opacity",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "card_4_text_color",
+      "label": "t:labels.card_text_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_4_border_color",
+      "label": "t:labels.card_border_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_4_border_width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "t:labels.card_border_width",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_4_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "t:labels.card_radius",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "t:headers.card_5"
+    },
+    {
+      "type": "product",
+      "id": "card_5_product",
+      "label": "t:labels.card_product",
+      "info": "t:infos.card_resource"
+    },
+    {
+      "type": "collection",
+      "id": "card_5_collection",
+      "label": "t:labels.card_collection"
+    },
+    {
+      "type": "article",
+      "id": "card_5_article",
+      "label": "t:labels.card_article"
+    },
+    {
+      "type": "text",
+      "id": "card_5_title",
+      "label": "t:labels.card_title",
+      "info": "t:infos.card_title"
+    },
+    {
+      "type": "text",
+      "id": "card_5_subtitle",
+      "label": "t:labels.card_subtitle"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_5_image",
+      "label": "t:labels.card_image",
+      "info": "t:infos.card_image"
+    },
+    {
+      "type": "color",
+      "id": "card_5_bg_color",
+      "label": "t:labels.card_bg_color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "card_5_overlay",
+      "label": "t:labels.card_overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "card_5_overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "t:labels.card_overlay_opacity",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "card_5_text_color",
+      "label": "t:labels.card_text_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_5_border_color",
+      "label": "t:labels.card_border_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_5_border_width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "t:labels.card_border_width",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_5_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "t:labels.card_radius",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "t:headers.card_6"
+    },
+    {
+      "type": "product",
+      "id": "card_6_product",
+      "label": "t:labels.card_product",
+      "info": "t:infos.card_resource"
+    },
+    {
+      "type": "collection",
+      "id": "card_6_collection",
+      "label": "t:labels.card_collection"
+    },
+    {
+      "type": "article",
+      "id": "card_6_article",
+      "label": "t:labels.card_article"
+    },
+    {
+      "type": "text",
+      "id": "card_6_title",
+      "label": "t:labels.card_title",
+      "info": "t:infos.card_title"
+    },
+    {
+      "type": "text",
+      "id": "card_6_subtitle",
+      "label": "t:labels.card_subtitle"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_6_image",
+      "label": "t:labels.card_image",
+      "info": "t:infos.card_image"
+    },
+    {
+      "type": "color",
+      "id": "card_6_bg_color",
+      "label": "t:labels.card_bg_color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "card_6_overlay",
+      "label": "t:labels.card_overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "card_6_overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "t:labels.card_overlay_opacity",
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "card_6_text_color",
+      "label": "t:labels.card_text_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_6_border_color",
+      "label": "t:labels.card_border_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_6_border_width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "t:labels.card_border_width",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_6_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "t:labels.card_radius",
+      "default": 12
     },
     {
       "type": "header",

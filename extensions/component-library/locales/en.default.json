@@ -13,6 +13,9 @@
     },
     "breadcrumb": {
       "home": "Home"
+    },
+    "card": {
+      "default_subtitle": "Shop now"
     }
   }
 }
