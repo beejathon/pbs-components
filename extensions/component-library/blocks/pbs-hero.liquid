@@ -9,6 +9,8 @@
   endif
 
   assign align = block.settings.content_position | default: 'start'
+  assign cta_width = block.settings.cta_width | default: 'full'
+  assign content_position_mobile = block.settings.content_position_mobile | default: 'end'
   assign heading_text = block.settings.heading
   assign image_alt = heading_text
   if block.settings.hero_image.alt != blank
@@ -57,7 +59,7 @@
 -%}
 
 <div
-  class="pbs-hero {{ layout_class }} pbs-hero--align-{{ align }}"
+  class="pbs-hero {{ layout_class }} pbs-hero--align-{{ align }} pbs-hero--cta-{{ cta_width }} pbs-hero--mobile-align-{{ content_position_mobile }}"
   style="
     --pbs-hero-bg: {{ block.settings.color_background }};
     --pbs-hero-heading: {{ block.settings.color_heading }};
@@ -388,6 +390,22 @@
       "label": "t:labels.cta_link"
     },
     {
+      "type": "select",
+      "id": "cta_width",
+      "label": "t:labels.cta_width",
+      "options": [
+        {
+          "value": "full",
+          "label": "t:options.cta_width_full"
+        },
+        {
+          "value": "auto",
+          "label": "t:options.cta_width_auto"
+        }
+      ],
+      "default": "full"
+    },
+    {
       "type": "header",
       "content": "t:headers.layout"
     },
@@ -427,6 +445,27 @@
         }
       ],
       "default": "start"
+    },
+    {
+      "type": "select",
+      "id": "content_position_mobile",
+      "label": "t:labels.content_position_mobile",
+      "info": "t:infos.content_position_mobile",
+      "options": [
+        {
+          "value": "start",
+          "label": "t:options.align_start"
+        },
+        {
+          "value": "center",
+          "label": "t:options.align_center"
+        },
+        {
+          "value": "end",
+          "label": "t:options.align_end"
+        }
+      ],
+      "default": "end"
     },
     {
       "type": "select",

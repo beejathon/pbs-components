@@ -56,7 +56,6 @@
 
 .pbs-hero__cta {
   display: inline-block;
-  width: 100%;
   padding: 0.875rem 2.5rem;
   font-size: 0.75rem;
   font-weight: 600;
@@ -68,6 +67,14 @@
   background-color: var(--pbs-hero-cta-bg);
   border-radius: 999px;
   transition: background-color 0.25s ease;
+}
+
+.pbs-hero--cta-full .pbs-hero__cta {
+  width: 100%;
+}
+
+.pbs-hero--cta-auto .pbs-hero__cta {
+  width: auto;
 }
 
 .pbs-hero__cta:hover {
@@ -338,6 +345,20 @@ a.pbs-hero__card:hover .pbs-hero__card-arrow {
   justify-items: end;
 }
 
+@media (max-width: 768px) {
+  .pbs-hero--full-bleed.pbs-hero--mobile-align-start .pbs-hero__content {
+    justify-content: flex-start;
+  }
+
+  .pbs-hero--full-bleed.pbs-hero--mobile-align-center .pbs-hero__content {
+    justify-content: center;
+  }
+
+  .pbs-hero--full-bleed.pbs-hero--mobile-align-end .pbs-hero__content {
+    justify-content: flex-end;
+  }
+}
+
 @media (min-width: 769px) {
   .pbs-hero {
     padding: 3.75rem 2.5rem;
@@ -363,10 +384,6 @@ a.pbs-hero__card:hover .pbs-hero__card-arrow {
     flex: 1;
     order: 0;
     max-width: 35rem;
-  }
-
-  .pbs-hero--split .pbs-hero__cta {
-    width: auto;
   }
 
   .pbs-hero__heading {
